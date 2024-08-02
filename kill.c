@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/syscall.h> /* Definition of SYS_* constants */
+#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -82,6 +83,8 @@ static void notify_ext(const char* script, const procinfo_t* victim)
         warn("notify_ext: fork() returned -1: %s\n", strerror(errno));
         return;
     } else if (pid1 != 0) {
+        int status;
+        waitpid(pid1, &status, 0);
         return;
     }
 
@@ -542,14 +545,14 @@ void kill_process(const poll_loop_args_t* args, int sig, const procinfo_t* victi
             victim->cmdline);
     }
 
-    int res = kill_wait(args, victim->pid, sig);
-    int saved_errno = errno;
-
-    // Send the GUI notification AFTER killing a process. This makes it more likely
+    // Send the GUI notification BEFORE killing a process. This makes it more likely
     // that there is enough memory to spawn the notification helper.
     if (sig != 0) {
         notify_process_killed(args, victim);
     }
+
+    int res = kill_wait(args, victim->pid, sig);
+    int saved_errno = errno;
 
     if (sig == 0) {
         return;
