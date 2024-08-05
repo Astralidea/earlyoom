@@ -55,9 +55,9 @@ static void poll_loop(const poll_loop_args_t* args);
 #define main main2
 #endif
 
-double min(double x, double y)
+double max(double x, double y)
 {
-    if (x < y)
+    if (x > y)
         return x;
     return y;
 }
@@ -323,9 +323,9 @@ int main(int argc, char* argv[])
         double M_term_percent = 100 * mem_term_kib / (double)m.MemTotalKiB;
         double M_kill_percent = 100 * mem_kill_kib / (double)m.MemTotalKiB;
         if (have_m) {
-            // Both -m and -M were passed. Use the lower of both values.
-            args.mem_term_percent = min(args.mem_term_percent, M_term_percent);
-            args.mem_kill_percent = min(args.mem_kill_percent, M_kill_percent);
+            // Both -m and -M were passed. Use the upper of both values.
+            args.mem_term_percent = max(args.mem_term_percent, M_term_percent);
+            args.mem_kill_percent = max(args.mem_kill_percent, M_kill_percent);
         } else {
             // Only -M was passed.
             args.mem_term_percent = M_term_percent;
@@ -337,9 +337,9 @@ int main(int argc, char* argv[])
         double S_term_percent = 100 * swap_term_kib / (double)m.SwapTotalKiB;
         double S_kill_percent = 100 * swap_kill_kib / (double)m.SwapTotalKiB;
         if (have_s) {
-            // Both -s and -S were passed. Use the lower of both values.
-            args.swap_term_percent = min(args.swap_term_percent, S_term_percent);
-            args.swap_kill_percent = min(args.swap_kill_percent, S_kill_percent);
+            // Both -s and -S were passed. Use the upper of both values.
+            args.swap_term_percent = max(args.swap_term_percent, S_term_percent);
+            args.swap_kill_percent = max(args.swap_kill_percent, S_kill_percent);
         } else {
             // Only -S was passed.
             args.swap_term_percent = S_term_percent;
