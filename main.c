@@ -483,7 +483,7 @@ static int lowmem_sig(const poll_loop_args_t* args, const meminfo_t* m)
     if (m->MemAvailablePercent <= args->mem_kill_percent && m->SwapFreePercent <= args->swap_kill_percent)
         return SIGKILL;
     else if (m->MemAvailablePercent <= args->mem_term_percent && m->SwapFreePercent <= args->swap_term_percent)
-        return SIGTERM;
+        return SIGKILL;
     return 0;
 }
 
@@ -501,10 +501,6 @@ static void poll_loop(const poll_loop_args_t* args)
             print_mem_stats(warn, m);
             warn("low memory! at or below SIGKILL limits: mem " PRIPCT ", swap " PRIPCT "\n",
                 args->mem_kill_percent, args->swap_kill_percent);
-        } else if (sig == SIGTERM) {
-            print_mem_stats(warn, m);
-            warn("low memory! at or below SIGTERM limits: mem " PRIPCT ", swap " PRIPCT "\n",
-                args->mem_term_percent, args->swap_term_percent);
         }
         if (sig) {
             procinfo_t victim = find_largest_process(args);
