@@ -281,7 +281,7 @@ int main(int argc, char* argv[])
                 "\n"
                 "  -m PERCENT[,KILL_PERCENT] set available memory minimum to PERCENT of total\n"
                 "                            (default 10 %%).\n"
-                "                            earlyoom sends SIGTERM once below PERCENT, then\n"
+                "                            earlyoom sends SIGKILL once below PERCENT, then\n"
                 "                            SIGKILL once below KILL_PERCENT (default PERCENT/2).\n"
                 "  -s PERCENT[,KILL_PERCENT] set free swap minimum to PERCENT of total (default\n"
                 "                            10 %%).\n"
@@ -394,7 +394,7 @@ int main(int argc, char* argv[])
     // Print memory limits
     fprintf(stderr, "mem total: %4lld MiB, user mem total: %4lld MiB, swap total: %4lld MiB\n",
         m.MemTotalKiB / 1024, m.UserMemTotalKiB / 1024, m.SwapTotalKiB / 1024);
-    fprintf(stderr, "sending SIGTERM when mem avail <= " PRIPCT " and swap free <= " PRIPCT ",\n",
+    fprintf(stderr, "sending SIGKILL when mem avail <= " PRIPCT " and swap free <= " PRIPCT ",\n",
         args.mem_term_percent, args.swap_term_percent);
     fprintf(stderr, "        SIGKILL when mem avail <= " PRIPCT " and swap free <= " PRIPCT "\n",
         args.mem_kill_percent, args.swap_kill_percent);
@@ -474,7 +474,7 @@ static unsigned sleep_time_ms(const poll_loop_args_t* args, const meminfo_t* m)
 }
 
 /* lowmem_sig compares the limits with the current memory situation
- * and returns which signal (SIGKILL, SIGTERM, 0) should be sent in
+ * and returns which signal (SIGKILL, SIGKILL, 0) should be sent in
  * response. 0 means that there is enough memory and we should
  * not kill anything.
  */
