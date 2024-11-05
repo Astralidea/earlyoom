@@ -1,6 +1,6 @@
 # Setting GIT_DIR keeps git from ascending to parent directories
 # and gives a nicer error message
-VERSION ?= "celerdata-earlyoom-1.2"
+VERSION ?= "celerdata-1.2"
 ifeq ($(VERSION),)
 VERSION := "(unknown version)"
 $(warning Could not get version from git, setting to $(VERSION))
